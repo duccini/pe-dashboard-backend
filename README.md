@@ -93,14 +93,14 @@ A API utiliza autenticação via email e senha com JWT.
 ```tree
 src/
 ├── auth
-│       ├── dto/
-│       │   └── login.dto.ts
-│       └── auth.controller.ts
+│   ├── dto/
+│   │   └── login.dto.ts
+│   └── auth.controller.ts
 ├── db/
 │   └── index.ts
 ├── drizzle/
 ├── users/
-│       └── dto/
+│   └── dto/
 ├── utils
 ├── app.controller.spec.ts
 ├── test/
