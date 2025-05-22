@@ -12,6 +12,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  // Método que verifica se o usuário existe e se a senha está correta
   async login(loginDto: LoginDto) {
     const user = await this.usersService.findByEmail(loginDto.email);
 

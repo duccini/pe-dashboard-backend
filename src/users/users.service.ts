@@ -10,6 +10,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
+  // Método para criar um novo usuário
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await hashPassword(createUserDto.password);
 
@@ -28,6 +29,7 @@ export class UsersService {
     return newUser;
   }
 
+  // Método para buscar um usuário pelo ID
   async findByEmail(email: string): Promise<User | undefined> {
     const user = await db.query.users.findFirst({
       where: (users, { eq }) => eq(users.email, email),
@@ -36,10 +38,12 @@ export class UsersService {
     return user ?? undefined;
   }
 
+  // Método para buscar todos os usuários
   async findAll() {
     return await db.select().from(users);
   }
 
+  // Método para atualizar um usuário pelo ID
   async update(id: number, updateUserDto: UpdateUserDto) {
     // Verifica se o usuário existe
     const user = await db.query.users.findFirst({
@@ -81,7 +85,7 @@ export class UsersService {
     };
   }
 
-  // Método para buscar um usuário pelo ID
+  // Método para deletar um usuário pelo ID
   async remove(id: number) {
     const user = await db.query.users.findFirst({
       where: (users, { eq }) => eq(users.id, id),
