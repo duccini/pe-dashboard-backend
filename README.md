@@ -90,21 +90,21 @@ A API utiliza autenticação via email e senha com JWT.
 
 (Em atualização)
 
-```text
+```tree
 src/
-= auth
-=== dto/
-==== login.dto.ts
-=== auth.controller.ts
-= db/
-== index.ts
-= drizzle/
-= users/
-=== dto/
-= utils
-= app.controller.spec.ts
-= test/
-= sqlite.db
+├── auth
+│       ├── dto/
+│       │   └── login.dto.ts
+│       └── auth.controller.ts
+├── db/
+│   └── index.ts
+├── drizzle/
+├── users/
+│       └── dto/
+├── utils
+├── app.controller.spec.ts
+├── test/
+└── sqlite.db
 ```
 
 ---
