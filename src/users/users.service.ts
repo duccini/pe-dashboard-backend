@@ -14,17 +14,22 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await hashPassword(createUserDto.password);
 
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        name: createUserDto.name,
-        email: createUserDto.email,
-        role: createUserDto.role,
-        password: hashedPassword,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .returning();
+    await db.insert(users).values({
+      name: createUserDto.name,
+      email: createUserDto.email,
+      role: createUserDto.role,
+      password: hashedPassword,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    const newUser = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.email, createUserDto.email),
+    });
+
+    if (!newUser) {
+      throw new Error('Failed to retrieve newly created user.'); // Ou uma exceção mais específica
+    }
 
     return newUser;
   }
