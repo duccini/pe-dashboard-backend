@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Post,
   Get,
+  Delete,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
@@ -51,5 +52,11 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.update(id, updateUserDto);
+  }
+
+  // Delete a user by ID
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.remove(id);
   }
 }

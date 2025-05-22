@@ -29,11 +29,11 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
-    const result = await db.query.users.findFirst({
+    const user = await db.query.users.findFirst({
       where: (users, { eq }) => eq(users.email, email),
     });
 
-    return result ?? undefined;
+    return user ?? undefined;
   }
 
   async findAll() {
@@ -79,5 +79,20 @@ export class UsersService {
       message: 'User updated successfully',
       user: updatedUser,
     };
+  }
+
+  // Método para buscar um usuário pelo ID
+  async remove(id: number) {
+    const user = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.id, id),
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await db.delete(users).where(eq(users.id, id));
+
+    return { message: 'User deleted successfully', user };
   }
 }
