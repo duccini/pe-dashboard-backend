@@ -21,8 +21,8 @@ Esta é uma API RESTful desenvolvida com **NestJS** e **Fastify**, utilizando **
 ## 🚀 Instalação
 
 ```bash
-git clone https://github.com/duccini/pe-dasjboard-backend.git
-cd user-management-api
+git clone https://github.com/duccini/pe-dashboard-backend.git
+cd pe-dashboard-backend
 npm install
 ```
 
@@ -32,7 +32,7 @@ npm install
 
 O banco de dados padrão é SQLite, ideal para desenvolvimento local.
 
-Para rodar as migrações (caso configuradas):
+Para rodar as migrações:
 
 ```bash
 npm run drizzle:generate
@@ -45,7 +45,7 @@ npm run drizzle:push
 
 ### Desenvolviemento
 
-A aplicação será exposta por padrão em http://localhost:3000.
+A aplicação será exposta em http://localhost:3000.
 
 ```bash
 npm start:dev
@@ -88,19 +88,23 @@ A API utiliza autenticação via email e senha com JWT.
 
 ## 📂 Estrutura de Pastas
 
-```css
+(Em atualização)
+
+```text
 src/
-├── auth/
-│   ├── auth.controller.ts
-│   ├── auth.service.ts
-│   └── dto/
-├── users/
-│   ├── users.controller.ts
-│   ├── users.service.ts
-│   └── dto/
-├── app.module.ts
-├── app.controller.ts
-└── main.ts
+= auth
+=== dto/
+==== login.dto.ts
+=== auth.controller.ts
+= db/
+== index.ts
+= drizzle/
+= users/
+=== dto/
+= utils
+= app.controller.spec.ts
+= test/
+= sqlite.db
 ```
 
 ---
@@ -121,7 +125,7 @@ Essas proteções estão configuradas no main.ts.
 
 ## 🧪 Testes
 
-Você pode configurar testes com Vitest ou Jest para validar funcionalidades da aplicação.
+Testes unitários realizados no momeneto por IA :( (Revisar).
 
 ---
 
