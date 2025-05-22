@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { eq, and } from 'drizzle-orm';
+
 import { db } from '../db';
-import { users } from '../db/schema';
-import { eq } from 'drizzle-orm';
-import { hashPassword, comparePasswords } from '../utils/hash-password';
+import { User, users } from '../db/schema';
+import { hashPassword } from '../utils/hash-password';
+
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,16 +28,56 @@ export class UsersService {
     return newUser;
   }
 
-  async findByEmail(email: string) {
-    const result = await db.select().from(users).where(eq(users.email, email));
-    return result[0];
+  async findByEmail(email: string): Promise<User | undefined> {
+    const result = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.email, email),
+    });
+
+    return result ?? undefined;
   }
 
-  async validateUser(email: string, password: string) {
-    const user = await this.findByEmail(email);
-    if (!user) return null;
+  async findAll() {
+    return await db.select().from(users);
+  }
 
-    const isMatch = await comparePasswords(password, user.password);
-    return isMatch ? user : null;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    // Verifica se o usuário existe
+    const user = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.id, id),
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const { password, role, ...rest } = updateUserDto;
+
+    const updateData: Partial<typeof users.$inferInsert> = {
+      ...rest,
+      updatedAt: new Date(),
+    };
+
+    if (password) {
+      updateData.password = await hashPassword(password);
+    }
+
+    if (role) {
+      updateData.role = role;
+    }
+
+    await db.update(users).set(updateData).where(eq(users.id, id));
+
+    // Busca o usuário atualizado para retorno (sem senha)
+    const updatedUser = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.id, id),
+      columns: {
+        password: false, // omitindo senha do retorno
+      },
+    });
+
+    return {
+      message: 'User updated successfully',
+      user: updatedUser,
+    };
   }
 }
