@@ -156,11 +156,3 @@ Content-Type: application/json
   "password": "senhaSegura123"
 }
 ```
-
----
-
-## ⚙️ Execução
-
-```bash
-
-```
