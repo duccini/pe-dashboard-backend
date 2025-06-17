@@ -1,20 +1,24 @@
 # Passatempo Educativo - Plataforma Web
 
-Esta é uma API RESTful desenvolvida com **NestJS** e **Fastify**, utilizando **TypeScript**, **Drizzle ORM** e **SQLite**. A API permite operações de autenticação e gerenciamento de usuários, incluindo criação, listagem, atualização e remoção. A documentação da API está disponível via **Swagger**.
+Esta é uma **API GraphQL** desenvolvida com **NestJS** e **Express**, utilizando **TypeScript**, **Drizzle ORM** e **SQLite**. A API permite operações de autenticação e gerenciamento de usuários, incluindo criação, listagem, atualização e remoção. A interface GraphQL está disponível via Apollo Playground.
 
 ---
 
 ## 📦 Tecnologias Utilizadas
 
-- [NestJS](https://nestjs.com/) com [Fastify](https://www.fastify.io/)
+- [NestJS](https://nestjs.com/) com [Express](https://expressjs.com/)
+- [GraphQL](https://graphql.org/) com [@nestjs/graphql](https://docs.nestjs.com/graphql/quick-start)
 - [Drizzle ORM](https://orm.drizzle.team/)
 - [SQLite](https://www.sqlite.org/)
-- [Swagger](https://swagger.io/) para documentação automática
 - Segurança com:
+
   - CORS
-  - Helmet
-  - Rate Limiting (`@fastify/rate-limit`)
+  - Helmet (comentado por padrão durante desenvolvimento)
+  - Rate Limiting (comentado por padrão durante desenvolvimento)
+  - JWT com Guard (`GqlAuthGuard`)
+
 - Validação com `class-validator` e `class-transformer`
+- Tipagem com GraphQL usando `@nestjs/graphql` + `class-validator`
 
 ---
 
@@ -28,9 +32,9 @@ npm install
 
 ---
 
-## 🗃️ Banco de Dados
+## 📃️ Banco de Dados
 
-O banco de dados padrão é SQLite, ideal para desenvolvimento local.
+O banco de dados padrão é **SQLite**, ideal para desenvolvimento local.
 
 Para rodar as migrações:
 
@@ -43,67 +47,81 @@ npm run drizzle:push
 
 ## ⚙️ Execução
 
-### Desenvolviemento
+### Desenvolvimento
 
-A aplicação será exposta em http://localhost:3000.
+A aplicação será exposta em:
+📍 `http://localhost:3000/graphql`
 
 ```bash
-npm start:dev
+npm run start:dev
 ```
 
 ### Produção
 
 ```bash
-npm build
-npm start
+npm run build
+npm run start
 ```
 
 ---
 
-## 📘 Documentação da API
+## 📘 Interface GraphQL
 
-Acesse a documentação Swagger no endpoint:
+Acesse o Apollo Playground no navegador:
 
-```bash
-GET http://localhost:3000/api
 ```
+http://localhost:3000/graphql
+```
+
+Você pode testar **queries** e **mutations** diretamente da interface, incluindo autenticação com JWT.
 
 ---
 
 ## 🔐 Autenticação
 
-A API utiliza autenticação via email e senha com JWT.
+A API utiliza autenticação via **JWT**, com proteção de rotas por `@UseGuards(GqlAuthGuard)`.
 
-- Rota pública:
+- Mutation pública:
 
-  - POST /auth/login
+  - `login(email: String!, password: String!): AuthResponse`
 
-- Rotas protegidas:
-  - GET /users
-  - POST /users
-  - PATCH /users/:id
-  - DELETE /users/:id
+- Queries/Mutations protegidas:
+
+  - `users`: lista todos os usuários
+  - `updateUser(id: Int!, input: UpdateUserInput!)`
+  - `deleteUser(id: Int!)`
+
+Para acessar rotas protegidas, adicione o token JWT ao **header** da requisição:
+
+```
+Authorization: Bearer <seu-token-jwt>
+```
 
 ---
 
 ## 📂 Estrutura de Pastas
 
-(Em atualização)
-
-```tree
+```txt
 src/
-├── auth
+├── auth/
 │   ├── dto/
-│   │   └── login.dto.ts
-│   └── auth.controller.ts
+│   ├── auth.module.ts
+│   ├── auth.resolver.ts
+│   ├── auth.service.ts
+│   ├── jwt.strategy.ts
+│   └── gql-auth.guard.ts
 ├── db/
-│   └── index.ts
 ├── drizzle/
 ├── users/
-│   └── dto/
-├── utils
-├── app.controller.spec.ts
-├── test/
+│   ├── dto/
+│   ├── types/
+│   ├── users.module.ts
+│   ├── users.service.ts
+│   └── users.resolver.ts
+├── utils/
+├── app.module.ts
+├── main.ts
+├── .env
 └── sqlite.db
 ```
 
@@ -111,48 +129,72 @@ src/
 
 ## 🛡️ Segurança
 
-A aplicação implementa os seguintes mecanismos de segurança:
+- **CORS**: habilitado para `http://localhost:3000`
+- **Helmet**: desabilitado por padrão durante o desenvolvimento para evitar bloqueio do Apollo Playground
+- **Rate Limiting**: também desabilitado no desenvolvimento
+- **JWT Guard**: protege resolvers via `@UseGuards(GqlAuthGuard)`
 
-CORS: habilitado globalmente para todas as origens.
-
-Helmet: define cabeçalhos HTTP seguros.
-
-Rate Limiting: limita a 100 requisições por minuto por IP.
-
-Essas proteções estão configuradas no main.ts.
+As configurações de segurança estão no `main.ts`.
 
 ---
 
-## 🧪 Testes
+## 🥪 Testes
 
-Testes unitários realizados no momeneto por IA :( (Revisar).
+Testes unitários ainda não implementados.
+Cobertura de testes com `Jest` está planejada para login, registro e proteção de rotas.
 
 ---
 
-## ✨ Exemplos de Requisições
+## ✨ Exemplos de Requisições GraphQL
 
-Criar usuário
+### Criar Usuário
 
-```http
-POST /users
-Content-Type: application/json
-
-{
-  "name": "João da Silva",
-  "email": "joao@email.com",
-  "password": "senhaSegura123",
-  "role": "user"
+```graphql
+mutation {
+  createUser(
+    input: {
+      name: "João da Silva"
+      email: "joao@email.com"
+      password: "senhaSegura123"
+      role: "user"
+    }
+  ) {
+    id
+    name
+    email
+    role
+  }
 }
 ```
 
-Login
+### Login
 
-```http
-POST /auth/login
-Content-Type: application/json
+```graphql
+mutation {
+  login(email: "joao@email.com", password: "senhaSegura123") {
+    accessToken
+    user {
+      id
+      name
+      role
+    }
+  }
+}
+```
 
-{
-  "email": "joao@email.com",
-  "password": "senhaSegura123"
+### Buscar Todos os Usuários (com JWT)
+
+> Header:
+> `Authorization: Bearer <seu-token-jwt>`
+
+```graphql
+query {
+  users {
+    id
+    name
+    email
+    role
+    createdAt
+  }
 }
 ```

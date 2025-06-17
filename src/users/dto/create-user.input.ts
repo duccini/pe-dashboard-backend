@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { InputType, Field } from '@nestjs/graphql';
 import {
   IsEmail,
   IsNotEmpty,
@@ -8,21 +8,22 @@ import {
 } from 'class-validator';
 import { UserRole } from '../roles.enum';
 
-export class CreateUserDto {
-  @ApiProperty({ example: 'John Doe' })
+@InputType()
+export class CreateUserInput {
+  @Field()
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ example: 'john@example.com' })
+  @Field()
   @IsEmail()
   email: string;
 
-  @ApiProperty({ example: 'strongpassword' })
+  @Field()
   @MinLength(6)
   password: string;
 
-  @ApiProperty({ enum: UserRole, example: UserRole.USER })
+  @Field(() => String)
   @IsEnum(UserRole, {
     message: 'role must be one of: user, admin, super-admin',
   })

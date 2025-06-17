@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { LoginDto } from './dto/login.dto';
+import { LoginInput } from './dto/login.input';
 import * as bcrypt from 'bcrypt';
 import { comparePasswords } from 'src/utils/hash-password';
 
@@ -13,7 +13,7 @@ export class AuthService {
   ) {}
 
   // Método que verifica se o usuário existe e se a senha está correta
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginInput) {
     const user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
@@ -31,8 +31,8 @@ export class AuthService {
 
     const { password, ...payload } = user;
     return {
-      access_token: this.jwtService.sign({
-        sub: user.id,
+      accessToken: this.jwtService.sign({
+        userId: user.id,
         email: user.email,
         role: user.role,
       }),

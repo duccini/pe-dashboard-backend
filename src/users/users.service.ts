@@ -5,13 +5,13 @@ import { db } from '../db';
 import { User, users } from '../db/schema';
 import { hashPassword } from '../utils/hash-password';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
 export class UsersService {
   // Método para criar um novo usuário
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserInput) {
     const hashedPassword = await hashPassword(createUserDto.password);
 
     await db.insert(users).values({
@@ -49,7 +49,7 @@ export class UsersService {
   }
 
   // Método para atualizar um usuário pelo ID
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserInput) {
     // Verifica se o usuário existe
     const user = await db.query.users.findFirst({
       where: (users, { eq }) => eq(users.id, id),
