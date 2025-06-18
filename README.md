@@ -8,7 +8,7 @@ Esta é uma **API GraphQL** desenvolvida com **NestJS** e **Express**, utilizand
 
 - [NestJS](https://nestjs.com/) com [Express](https://expressjs.com/)
 - [GraphQL](https://graphql.org/) com [@nestjs/graphql](https://docs.nestjs.com/graphql/quick-start)
-- [Drizzle ORM](https://orm.drizzle.team/)
+- [TypeORM ORM](https://typeorm.io/)
 - [SQLite](https://www.sqlite.org/)
 - Segurança com:
 
