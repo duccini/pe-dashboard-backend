@@ -1,10 +1,14 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, ID, registerEnumType } from '@nestjs/graphql';
 import { UserRole } from '../roles.enum';
+
+registerEnumType(UserRole, {
+  name: 'UserRole',
+});
 
 @ObjectType()
 export class UserType {
-  @Field(() => Int)
-  id: number;
+  @Field(() => ID)
+  id: string;
 
   @Field()
   name: string;
@@ -12,7 +16,7 @@ export class UserType {
   @Field()
   email: string;
 
-  @Field(() => String)
+  @Field(() => UserRole)
   role: UserRole;
 
   @Field()

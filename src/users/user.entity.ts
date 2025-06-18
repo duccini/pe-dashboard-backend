@@ -1,6 +1,7 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  ObjectIdColumn,
+  ObjectId,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
@@ -9,8 +10,8 @@ import { UserRole } from './roles.enum';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column()
   name: string;
@@ -21,12 +22,26 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: 'text' })
+  @Column()
   role: UserRole;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp' }) // Garante que a data de criação seja gerada automaticamente
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ type: 'timestamp' }) // Garante que a data de atualização seja gerada automaticamente
   updatedAt: Date;
+
+  // Getter virtual para retornar o id como string
+  get id(): string {
+    return this._id ? this._id.toString() : '';
+  }
+
+  // Setter virtual para aceitar string e converter para ObjectId
+  set id(value: string | ObjectId) {
+    if (typeof value === 'string') {
+      this._id = new ObjectId(value);
+    } else {
+      this._id = value;
+    }
+  }
 }

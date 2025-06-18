@@ -3,12 +3,18 @@
 # ------------------------------------------------------
 
 type UserType {
-  id: Int!
+  id: ID!
   name: String!
   email: String!
-  role: String!
+  role: UserRole!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
 }
 
 """
@@ -24,12 +30,13 @@ type AuthResponse {
 type Query {
   hello: String!
   users: [UserType!]!
+  user(id: ID!): UserType
 }
 
 type Mutation {
   createUser(input: CreateUserInput!): UserType!
-  updateUser(id: Int!, input: UpdateUserInput!): UserType!
-  deleteUser(id: Int!): UserType!
+  updateUser(id: ID!, input: UpdateUserInput!): UserType!
+  removeUser(id: ID!): UserType!
   login(input: LoginInput!): AuthResponse!
 }
 

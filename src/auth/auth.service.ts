@@ -4,6 +4,7 @@ import { UsersService } from '../users/users.service';
 import { LoginInput } from './dto/login.input';
 import * as bcrypt from 'bcrypt';
 import { comparePasswords } from 'src/utils/hash-password';
+import { UserType } from 'src/users/dto/user.type';
 
 @Injectable()
 export class AuthService {
@@ -29,14 +30,24 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas');
     }
 
-    const { password, ...payload } = user;
+    // Mapeia o _id para id e remove a senha do objeto do usuário
+    const userForAuthResponse: UserType = {
+      id: user._id.toString(), // Converte ObjectId para string e atribui a 'id'
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      // Não inclua a senha aqui
+    };
+
     return {
       accessToken: this.jwtService.sign({
-        userId: user.id,
+        userId: user._id.toString(), // Use _id aqui para o JWT payload, se necessário
         email: user.email,
         role: user.role,
       }),
-      user: payload,
+      user: userForAuthResponse, // Retorne o objeto formatado com 'id'
     };
   }
 }

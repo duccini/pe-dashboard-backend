@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,11 +19,18 @@ import { User } from './users/user.entity';
       introspection: true, // necessário para o Apollo Sandbox
       installSubscriptionHandlers: false,
     }),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'sqlite.db',
-      entities: [User],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mongodb',
+        url: configService.get<string>('MONGO_URI'),
+        database: configService.get<string>('MONGO_DB_NAME'),
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        entities: [User],
+        synchronize: true, // Somente para desenvolvimento
+      }),
     }),
     UsersModule,
     AuthModule,
