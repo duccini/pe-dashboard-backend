@@ -1,6 +1,6 @@
 # Passatempo Educativo - Plataforma Web
 
-Esta é uma **API GraphQL** desenvolvida com **NestJS** e **Express**, utilizando **TypeScript**, **TypeORM** e \*_MongoDB_. A API permite operações de autenticação e gerenciamento de usuários, incluindo criação, listagem, atualização e remoção. A interface GraphQL está disponível via Apollo Playground (BUG).
+Esta é uma **API GraphQL** desenvolvida com **NestJS** e **Express**, utilizando **TypeScript**, **TypeORM** e **MongoDB**. A API permite operações de autenticação e gerenciamento de usuários, incluindo criação, listagem, atualização e remoção. A interface GraphQL está disponível via Apollo Playground (BUG).
 
 ---
 
