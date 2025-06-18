@@ -89,10 +89,7 @@ export class UsersService {
       where: { _id: objectId },
     });
 
-    return {
-      message: 'User updated successfully',
-      user: updated,
-    };
+    return updated;
   }
 
   // Método para deletar um usuário pelo ID

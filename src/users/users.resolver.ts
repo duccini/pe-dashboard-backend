@@ -35,11 +35,11 @@ export class UsersResolver {
   async updateUser(
     @Args('id', { type: () => ID }) id: string,
     @Args('input') input: UpdateUserInput,
-  ): Promise<any> {
+  ): Promise<UserType | null> {
     return this.usersService.update(id, input);
   }
 
-  @Mutation(() => UserType)
+  @Mutation(() => ResultType)
   @UseGuards(GqlAuthGuard)
   async removeUser(
     @Args('id', { type: () => ID }) id: string,
