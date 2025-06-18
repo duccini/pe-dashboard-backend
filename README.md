@@ -9,7 +9,7 @@ Esta é uma **API GraphQL** desenvolvida com **NestJS** e **Express**, utilizand
 - [NestJS](https://nestjs.com/) com [Express](https://expressjs.com/)
 - [GraphQL](https://graphql.org/) com [@nestjs/graphql](https://docs.nestjs.com/graphql/quick-start)
 - [TypeORM ORM](https://typeorm.io/)
-- [SQLite](https://www.sqlite.org/)
+- [MongoDB Atlas](https://www.mongodb.com/)
 - Segurança com:
 
   - CORS
@@ -34,14 +34,9 @@ npm install
 
 ## 📃️ Banco de Dados
 
-O banco de dados padrão é **SQLite**, ideal para desenvolvimento local.
+O banco de dados utilizado no desenvolvimento da aplicação é o MongoDB Atlas.
 
-Para rodar as migrações:
-
-```bash
-npm run drizzle:generate
-npm run drizzle:push
-```
+É necessário atualizar as variáveis de ambiente no arquivo `.env`.
 
 ---
 
@@ -65,7 +60,7 @@ npm run start
 
 ---
 
-## 📘 Interface GraphQL
+## 📘 Interface GraphQL (BUG)
 
 Acesse o Apollo Playground no navegador:
 
@@ -88,8 +83,8 @@ A API utiliza autenticação via **JWT**, com proteção de rotas por `@UseGuard
 - Queries/Mutations protegidas:
 
   - `users`: lista todos os usuários
-  - `updateUser(id: Int!, input: UpdateUserInput!)`
-  - `deleteUser(id: Int!)`
+  - `updateUser(id: ID!, input: UpdateUserInput!)`
+  - `deleteUser(id: ID!)`
 
 Para acessar rotas protegidas, adicione o token JWT ao **header** da requisição:
 
@@ -110,8 +105,8 @@ src/
 │   ├── auth.service.ts
 │   ├── jwt.strategy.ts
 │   └── gql-auth.guard.ts
-├── db/
-├── drizzle/
+├── common/
+│   ├── dto/
 ├── users/
 │   ├── dto/
 │   ├── types/
@@ -122,7 +117,6 @@ src/
 ├── app.module.ts
 ├── main.ts
 ├── .env
-└── sqlite.db
 ```
 
 ---
